@@ -1,385 +1,382 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestão de Estoque - Etapa 3</title>
+  
+  <!-- Importando o React diretamente pela internet (Sem precisar de Node ou NPM) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Importando o Babel para o navegador entender o código React -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-export default function App() {
-  // ==========================================
-  // ESTADOS GERAIS DA APLICAÇÃO
-  // ==========================================
-  const [activeTab, setActiveTab] = useState('products');
+  <!-- Estilo Visual Acadêmico / Rústico -->
+  <style>
+    body { margin: 0; padding: 0; background-color: #f5f5f5; font-family: "Times New Roman", Times, serif; color: #000; }
+    .app-container { padding: 20px; box-sizing: border-box; min-height: 100vh; }
+    .header { border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
+    .header h1 { font-size: 26px; font-weight: bold; text-transform: uppercase; margin: 0; }
+    .header h2 { font-size: 16px; margin-top: 5px; font-style: italic; font-weight: normal; }
+    .main-content { max-width: 900px; margin: 0 auto; border: 1px solid #000; padding: 20px; background: #fff; box-shadow: 4px 4px 0px #000; }
+    .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 15px; }
+    .nav span { font-weight: bold; margin-right: 10px; font-family: Arial, sans-serif; font-size: 14px; }
+    .nav button { padding: 5px 15px; border: 1px solid #000; font-family: Arial, sans-serif; font-size: 14px; cursor: pointer; background: #eee; color: #000; }
+    .nav button.active { background: #000; color: #fff; font-weight: bold; }
+    .nav button:hover:not(.active) { background: #ddd; }
+    .content-area { font-family: Arial, sans-serif; font-size: 14px; }
+    .fieldset { border: 1px solid #000; padding: 15px; margin-bottom: 25px; background: #fdfdfd; }
+    .legend { font-weight: bold; padding: 0 5px; font-size: 13px; }
+    .form-group { margin-bottom: 10px; display: flex; align-items: flex-start; flex-direction: column; }
+    @media (min-width: 600px) { .form-group { flex-direction: row; align-items: center; } }
+    .form-group label { font-weight: bold; width: 150px; flex-shrink: 0; margin-bottom: 5px; }
+    .form-input { border: 1px solid #000; padding: 5px; width: 100%; max-width: 400px; font-family: inherit; font-size: 14px; }
+    textarea.form-input { resize: vertical; min-height: 50px; }
+    .form-actions { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #000; }
+    .btn-submit { background: #eee; border: 1px solid #000; padding: 5px 15px; font-weight: bold; cursor: pointer; }
+    .btn-submit:hover { background: #ddd; }
+    .btn-cancel { background: #fff; border: 1px solid #000; padding: 5px 15px; cursor: pointer; margin-left: 10px; }
+    .btn-cancel:hover { background: #f0f0f0; }
+    .table-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
+    .table { width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 13px; margin-top: 5px; }
+    .table th { background: #eee; border: 1px solid #000; padding: 8px; text-align: left; }
+    .table td { border: 1px solid #000; padding: 8px; }
+    .table tr:nth-child(even) { background-color: #f9f9f9; }
+    .text-center { text-align: center; }
+    .font-mono { font-family: monospace; }
+    .action-btn { background: none; border: none; cursor: pointer; font-weight: bold; font-size: 13px; padding: 0; text-decoration: underline; }
+    .action-btn.edit { color: #0000cc; margin-right: 10px; }
+    .action-btn.delete { color: #cc0000; }
+    .footer { text-align: center; font-size: 13px; margin-top: 40px; font-family: Arial, sans-serif; border-top: 1px solid #000; max-width: 900px; margin-left: auto; margin-right: auto; padding-top: 15px; color: #000; }
+    .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <!-- É aqui que o sistema será renderizado -->
+  <div id="root"></div>
 
-  // Simulando Banco de Dados
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Computador Portátil Dell Inspiron', description: 'Ecrã 15 polegadas, 16GB RAM', price: '4500.00', barcode: '789123456001' },
-    { id: 2, name: 'Rato Sem Fios Logitech', description: 'Rato ergonómico bluetooth', price: '150.00', barcode: '789123456002' },
-  ]);
+  <!-- Lógica do Sistema em React -->
+  <script type="text/babel">
+    const { useState } = React;
 
-  const [suppliers, setSuppliers] = useState([
-    { id: 1, name: 'Dell Computadores Lda', cnpj: '00.000.000/0001-00', address: 'Av. Industrial, 100 - Lisboa', contact: 'contato@dell.pt' },
-    { id: 2, name: 'Logitech Distribuidora', cnpj: '11.111.111/0001-11', address: 'Rua da Tecnologia, 50 - Porto', contact: 'vendas@logitech.pt' },
-  ]);
+    function App() {
+      // ESTADOS GERAIS
+      const [activeTab, setActiveTab] = useState('products');
 
-  const [associations, setAssociations] = useState([
-    { id: 1, productId: 1, supplierId: 1 },
-    { id: 2, productId: 2, supplierId: 2 },
-  ]);
+      // MOCK DATABASE
+      const [products, setProducts] = useState([
+        { id: 1, name: 'Computador Portátil Dell Inspiron', description: 'Ecrã 15 polegadas, 16GB RAM', price: '4500.00', barcode: '789123456001' },
+        { id: 2, name: 'Rato Sem Fios Logitech', description: 'Rato ergonómico bluetooth', price: '150.00', barcode: '789123456002' },
+      ]);
 
-  // ==========================================
-  // ESTADOS E FUNÇÕES: PRODUTOS
-  // ==========================================
-  const [prodFormData, setProdFormData] = useState({ id: null, name: '', description: '', price: '', barcode: '' });
-  const [isProdEditing, setIsProdEditing] = useState(false);
+      const [suppliers, setSuppliers] = useState([
+        { id: 1, name: 'Dell Computadores Lda', cnpj: '00.000.000/0001-00', address: 'Av. Industrial, 100 - Lisboa', contact: 'contato@dell.pt' },
+        { id: 2, name: 'Logitech Distribuidora', cnpj: '11.111.111/0001-11', address: 'Rua da Tecnologia, 50 - Porto', contact: 'vendas@logitech.pt' },
+      ]);
 
-  const handleSaveProduct = (e) => {
-    e.preventDefault();
-    if (isProdEditing) {
-      setProducts(products.map(p => p.id === prodFormData.id ? prodFormData : p));
-    } else {
-      setProducts([...products, { ...prodFormData, id: Date.now() }]);
-    }
-    setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' });
-    setIsProdEditing(false);
-  };
+      const [associations, setAssociations] = useState([
+        { id: 1, productId: 1, supplierId: 1 },
+        { id: 2, productId: 2, supplierId: 2 },
+      ]);
 
-  const handleEditProduct = (product) => {
-    setProdFormData(product);
-    setIsProdEditing(true);
-  };
+      // PRODUTOS
+      const [prodFormData, setProdFormData] = useState({ id: null, name: '', description: '', price: '', barcode: '' });
+      const [isProdEditing, setIsProdEditing] = useState(false);
 
-  const handleDeleteProduct = (id) => {
-    setProducts(products.filter(p => p.id !== id));
-    setAssociations(associations.filter(a => a.productId !== id));
-  };
+      const handleSaveProduct = (e) => {
+        e.preventDefault();
+        if (isProdEditing) {
+          setProducts(products.map(p => p.id === prodFormData.id ? prodFormData : p));
+        } else {
+          setProducts([...products, { ...prodFormData, id: Date.now() }]);
+        }
+        setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' });
+        setIsProdEditing(false);
+      };
 
-  // ==========================================
-  // ESTADOS E FUNÇÕES: FORNECEDORES
-  // ==========================================
-  const [suppFormData, setSuppFormData] = useState({ id: null, name: '', cnpj: '', address: '', contact: '' });
-  const [isSuppEditing, setIsSuppEditing] = useState(false);
+      const handleEditProduct = (product) => {
+        setProdFormData(product);
+        setIsProdEditing(true);
+      };
 
-  const handleSaveSupplier = (e) => {
-    e.preventDefault();
-    if (isSuppEditing) {
-      setSuppliers(suppliers.map(s => s.id === suppFormData.id ? suppFormData : s));
-    } else {
-      setSuppliers([...suppliers, { ...suppFormData, id: Date.now() }]);
-    }
-    setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' });
-    setIsSuppEditing(false);
-  };
+      const handleDeleteProduct = (id) => {
+        setProducts(products.filter(p => p.id !== id));
+        setAssociations(associations.filter(a => a.productId !== id));
+      };
 
-  const handleEditSupplier = (supplier) => {
-    setSuppFormData(supplier);
-    setIsSuppEditing(true);
-  };
+      // FORNECEDORES
+      const [suppFormData, setSuppFormData] = useState({ id: null, name: '', cnpj: '', address: '', contact: '' });
+      const [isSuppEditing, setIsSuppEditing] = useState(false);
 
-  const handleDeleteSupplier = (id) => {
-    setSuppliers(suppliers.filter(s => s.id !== id));
-    setAssociations(associations.filter(a => a.supplierId !== id));
-  };
+      const handleSaveSupplier = (e) => {
+        e.preventDefault();
+        if (isSuppEditing) {
+          setSuppliers(suppliers.map(s => s.id === suppFormData.id ? suppFormData : s));
+        } else {
+          setSuppliers([...suppliers, { ...suppFormData, id: Date.now() }]);
+        }
+        setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' });
+        setIsSuppEditing(false);
+      };
 
-  // ==========================================
-  // ESTADOS E FUNÇÕES: ASSOCIAÇÕES
-  // ==========================================
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [selectedSupplier, setSelectedSupplier] = useState('');
+      const handleEditSupplier = (supplier) => {
+        setSuppFormData(supplier);
+        setIsSuppEditing(true);
+      };
 
-  const handleLink = (e) => {
-    e.preventDefault();
-    if (!selectedProduct || !selectedSupplier) return;
-    
-    const exists = associations.find(a => a.productId === Number(selectedProduct) && a.supplierId === Number(selectedSupplier));
-    if (exists) return; 
+      const handleDeleteSupplier = (id) => {
+        setSuppliers(suppliers.filter(s => s.id !== id));
+        setAssociations(associations.filter(a => a.supplierId !== id));
+      };
 
-    setAssociations([...associations, { id: Date.now(), productId: Number(selectedProduct), supplierId: Number(selectedSupplier) }]);
-    setSelectedProduct('');
-    setSelectedSupplier('');
-  };
+      // ASSOCIAÇÕES
+      const [selectedProduct, setSelectedProduct] = useState('');
+      const [selectedSupplier, setSelectedSupplier] = useState('');
 
-  const handleUnlink = (id) => {
-    setAssociations(associations.filter(a => a.id !== id));
-  };
-
-  // ==========================================
-  // RENDERIZAÇÃO DA INTERFACE (UI) + ESTILOS
-  // ==========================================
-  return (
-    <div className="app-container">
-      {/* CSS INDEPENDENTE: Garante o visual sem precisar instalar Tailwind ou outras bibliotecas */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .app-container { min-height: 100vh; background-color: #f5f5f5; font-family: "Times New Roman", Times, serif; color: #000; padding: 20px; box-sizing: border-box; }
-        .header { border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
-        .header h1 { font-size: 26px; font-weight: bold; text-transform: uppercase; margin: 0; }
-        .header h2 { font-size: 16px; margin-top: 5px; font-style: italic; font-weight: normal; }
-        .main-content { max-width: 900px; margin: 0 auto; border: 1px solid #000; padding: 20px; background: #fff; box-shadow: 4px 4px 0px #000; }
-        .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 15px; }
-        .nav span { font-weight: bold; margin-right: 10px; font-family: Arial, sans-serif; font-size: 14px; }
-        .nav button { padding: 5px 15px; border: 1px solid #000; font-family: Arial, sans-serif; font-size: 14px; cursor: pointer; background: #eee; color: #000; }
-        .nav button.active { background: #000; color: #fff; font-weight: bold; }
-        .nav button:hover:not(.active) { background: #ddd; }
-        .content-area { font-family: Arial, sans-serif; font-size: 14px; }
-        .fieldset { border: 1px solid #000; padding: 15px; margin-bottom: 25px; background: #fdfdfd; }
-        .legend { font-weight: bold; padding: 0 5px; font-size: 13px; }
-        .form-group { margin-bottom: 10px; display: flex; align-items: flex-start; flex-direction: column; }
-        @media (min-width: 600px) { .form-group { flex-direction: row; align-items: center; } }
-        .form-group label { font-weight: bold; width: 150px; flex-shrink: 0; margin-bottom: 5px; }
-        .form-input { border: 1px solid #000; padding: 5px; width: 100%; max-width: 400px; font-family: inherit; font-size: 14px; }
-        textarea.form-input { resize: vertical; min-height: 50px; }
-        .form-actions { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #000; }
-        .btn-submit { background: #eee; border: 1px solid #000; padding: 5px 15px; font-weight: bold; cursor: pointer; }
-        .btn-submit:hover { background: #ddd; }
-        .btn-cancel { background: #fff; border: 1px solid #000; padding: 5px 15px; cursor: pointer; margin-left: 10px; }
-        .btn-cancel:hover { background: #f0f0f0; }
-        .table-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
-        .table { width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 13px; margin-top: 5px; }
-        .table th { background: #eee; border: 1px solid #000; padding: 8px; text-align: left; }
-        .table td { border: 1px solid #000; padding: 8px; }
-        .table tr:nth-child(even) { background-color: #f9f9f9; }
-        .text-center { text-align: center; }
-        .font-mono { font-family: monospace; }
-        .action-btn { background: none; border: none; cursor: pointer; font-weight: bold; font-size: 13px; padding: 0; text-decoration: underline; }
-        .action-btn.edit { color: #0000cc; margin-right: 10px; }
-        .action-btn.delete { color: #cc0000; }
-        .footer { text-align: center; font-size: 13px; margin-top: 40px; font-family: Arial, sans-serif; border-top: 1px solid #000; max-width: 900px; margin-left: auto; margin-right: auto; padding-top: 15px; color: #000; }
-        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
-      `}} />
-
-      {/* Cabeçalho */}
-      <header className="header">
-        <h1>Sistema de Gestão - Frontend</h1>
-        <h2>Trabalho Prático - Projeto Integrador</h2>
-      </header>
-
-      {/* Caixa Principal */}
-      <main className="main-content">
+      const handleLink = (e) => {
+        e.preventDefault();
+        if (!selectedProduct || !selectedSupplier) return;
         
-        {/* Navegação */}
-        <div className="nav">
-          <span>Menu:</span>
-          <button 
-            onClick={() => setActiveTab('products')} 
-            className={activeTab === 'products' ? 'active' : ''}
-          >
-            [1] Produtos
-          </button>
-          <button 
-            onClick={() => setActiveTab('suppliers')} 
-            className={activeTab === 'suppliers' ? 'active' : ''}
-          >
-            [2] Fornecedores
-          </button>
-          <button 
-            onClick={() => setActiveTab('associations')} 
-            className={activeTab === 'associations' ? 'active' : ''}
-          >
-            [3] Associações N:N
-          </button>
-        </div>
+        const exists = associations.find(a => a.productId === Number(selectedProduct) && a.supplierId === Number(selectedSupplier));
+        if (exists) return; 
 
-        {/* Conteúdo Dinâmico */}
-        <div className="content-area">
-          
-          {/* ABA 1: PRODUTOS */}
-          {activeTab === 'products' && (
-            <div>
-              <fieldset className="fieldset">
-                <legend className="legend">{isProdEditing ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</legend>
-                <form onSubmit={handleSaveProduct}>
-                  <div className="form-group">
-                    <label>Nome do Produto:</label>
-                    <input required type="text" className="form-input" value={prodFormData.name} onChange={e => setProdFormData({ ...prodFormData, name: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label>Código de Barras:</label>
-                    <input required type="text" className="form-input" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label>Preço (R$):</label>
-                    <input required type="number" step="0.01" className="form-input" style={{maxWidth: '100px'}} value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label style={{alignSelf: 'flex-start'}}>Descrição:</label>
-                    <textarea required className="form-input" rows="2" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
-                  </div>
-                  <div className="form-actions">
-                    <button type="submit" className="btn-submit">
-                      {isProdEditing ? 'Salvar Edição' : 'Cadastrar Produto'}
-                    </button>
-                    {isProdEditing && (
-                      <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="btn-cancel">Cancelar</button>
-                    )}
-                  </div>
-                </form>
-              </fieldset>
+        setAssociations([...associations, { id: Date.now(), productId: Number(selectedProduct), supplierId: Number(selectedSupplier) }]);
+        setSelectedProduct('');
+        setSelectedSupplier('');
+      };
 
-              <div className="table-title">Lista de Produtos</div>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th className="text-center">ID</th>
-                    <th>Nome</th>
-                    <th>Cód. Barras</th>
-                    <th>Preço</th>
-                    <th className="text-center">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
-                  ) : (
-                    products.map(p => (
-                      <tr key={p.id}>
-                        <td className="text-center">{p.id}</td>
-                        <td style={{fontWeight: 'bold'}}>{p.name}</td>
-                        <td className="font-mono">{p.barcode}</td>
-                        <td>R$ {Number(p.price).toFixed(2)}</td>
-                        <td className="text-center">
-                          <button onClick={() => handleEditProduct(p)} className="action-btn edit">[Editar]</button>
-                          <button onClick={() => handleDeleteProduct(p.id)} className="action-btn delete">[Excluir]</button>
-                        </td>
+      const handleUnlink = (id) => {
+        setAssociations(associations.filter(a => a.id !== id));
+      };
+
+      return (
+        <div className="app-container">
+          {/* Cabeçalho */}
+          <header className="header">
+            <h1>Sistema de Gestão - Frontend</h1>
+            <h2>Trabalho Prático - Projeto Integrador</h2>
+          </header>
+
+          {/* Caixa Principal */}
+          <main className="main-content">
+            
+            {/* Navegação */}
+            <div className="nav">
+              <span>Menu:</span>
+              <button onClick={() => setActiveTab('products')} className={activeTab === 'products' ? 'active' : ''}>[1] Produtos</button>
+              <button onClick={() => setActiveTab('suppliers')} className={activeTab === 'suppliers' ? 'active' : ''}>[2] Fornecedores</button>
+              <button onClick={() => setActiveTab('associations')} className={activeTab === 'associations' ? 'active' : ''}>[3] Associações N:N</button>
+            </div>
+
+            {/* Conteúdo Dinâmico */}
+            <div className="content-area">
+              
+              {/* ABA 1: PRODUTOS */}
+              {activeTab === 'products' && (
+                <div>
+                  <fieldset className="fieldset">
+                    <legend className="legend">{isProdEditing ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</legend>
+                    <form onSubmit={handleSaveProduct}>
+                      <div className="form-group">
+                        <label>Nome do Produto:</label>
+                        <input required type="text" className="form-input" value={prodFormData.name} onChange={e => setProdFormData({ ...prodFormData, name: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Código de Barras:</label>
+                        <input required type="text" className="form-input" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Preço (R$):</label>
+                        <input required type="number" step="0.01" className="form-input" style={{maxWidth: '100px'}} value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label style={{alignSelf: 'flex-start'}}>Descrição:</label>
+                        <textarea required className="form-input" rows="2" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
+                      </div>
+                      <div className="form-actions">
+                        <button type="submit" className="btn-submit">{isProdEditing ? 'Salvar Edição' : 'Cadastrar Produto'}</button>
+                        {isProdEditing && (
+                          <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="btn-cancel">Cancelar</button>
+                        )}
+                      </div>
+                    </form>
+                  </fieldset>
+
+                  <div className="table-title">Lista de Produtos</div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th className="text-center">ID</th>
+                        <th>Nome</th>
+                        <th>Cód. Barras</th>
+                        <th>Preço</th>
+                        <th className="text-center">Ações</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                    </thead>
+                    <tbody>
+                      {products.length === 0 ? (
+                        <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
+                      ) : (
+                        products.map(p => (
+                          <tr key={p.id}>
+                            <td className="text-center">{p.id}</td>
+                            <td style={{fontWeight: 'bold'}}>{p.name}</td>
+                            <td className="font-mono">{p.barcode}</td>
+                            <td>R$ {Number(p.price).toFixed(2)}</td>
+                            <td className="text-center">
+                              <button onClick={() => handleEditProduct(p)} className="action-btn edit">[Editar]</button>
+                              <button onClick={() => handleDeleteProduct(p.id)} className="action-btn delete">[Excluir]</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-          {/* ABA 2: FORNECEDORES */}
-          {activeTab === 'suppliers' && (
-            <div>
-              <fieldset className="fieldset">
-                <legend className="legend">{isSuppEditing ? 'EDITAR FORNECEDOR' : 'NOVO FORNECEDOR'}</legend>
-                <form onSubmit={handleSaveSupplier}>
-                  <div className="form-group">
-                    <label>Razão Social:</label>
-                    <input required type="text" className="form-input" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label>CNPJ:</label>
-                    <input required type="text" className="form-input" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label>E-mail:</label>
-                    <input required type="email" className="form-input" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label>Endereço:</label>
-                    <input required type="text" className="form-input" value={suppFormData.address} onChange={e => setSuppFormData({ ...suppFormData, address: e.target.value })} />
-                  </div>
-                  <div className="form-actions">
-                    <button type="submit" className="btn-submit">
-                      {isSuppEditing ? 'Salvar Edição' : 'Cadastrar Fornecedor'}
-                    </button>
-                    {isSuppEditing && (
-                      <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="btn-cancel">Cancelar</button>
-                    )}
-                  </div>
-                </form>
-              </fieldset>
+              {/* ABA 2: FORNECEDORES */}
+              {activeTab === 'suppliers' && (
+                <div>
+                  <fieldset className="fieldset">
+                    <legend className="legend">{isSuppEditing ? 'EDITAR FORNECEDOR' : 'NOVO FORNECEDOR'}</legend>
+                    <form onSubmit={handleSaveSupplier}>
+                      <div className="form-group">
+                        <label>Razão Social:</label>
+                        <input required type="text" className="form-input" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>CNPJ:</label>
+                        <input required type="text" className="form-input" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>E-mail:</label>
+                        <input required type="email" className="form-input" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
+                      </div>
+                      <div className="form-group">
+                        <label>Endereço:</label>
+                        <input required type="text" className="form-input" value={suppFormData.address} onChange={e => setSuppFormData({ ...suppFormData, address: e.target.value })} />
+                      </div>
+                      <div className="form-actions">
+                        <button type="submit" className="btn-submit">{isSuppEditing ? 'Salvar Edição' : 'Cadastrar Fornecedor'}</button>
+                        {isSuppEditing && (
+                          <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="btn-cancel">Cancelar</button>
+                        )}
+                      </div>
+                    </form>
+                  </fieldset>
 
-              <div className="table-title">Lista de Fornecedores</div>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th className="text-center">ID</th>
-                    <th>Razão Social</th>
-                    <th>CNPJ</th>
-                    <th>E-mail</th>
-                    <th className="text-center">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {suppliers.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
-                  ) : (
-                    suppliers.map(s => (
-                      <tr key={s.id}>
-                        <td className="text-center">{s.id}</td>
-                        <td style={{fontWeight: 'bold'}}>{s.name}</td>
-                        <td className="font-mono">{s.cnpj}</td>
-                        <td>{s.contact}</td>
-                        <td className="text-center">
-                          <button onClick={() => handleEditSupplier(s)} className="action-btn edit">[Editar]</button>
-                          <button onClick={() => handleDeleteSupplier(s.id)} className="action-btn delete">[Excluir]</button>
-                        </td>
+                  <div className="table-title">Lista de Fornecedores</div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th className="text-center">ID</th>
+                        <th>Razão Social</th>
+                        <th>CNPJ</th>
+                        <th>E-mail</th>
+                        <th className="text-center">Ações</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                    </thead>
+                    <tbody>
+                      {suppliers.length === 0 ? (
+                        <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
+                      ) : (
+                        suppliers.map(s => (
+                          <tr key={s.id}>
+                            <td className="text-center">{s.id}</td>
+                            <td style={{fontWeight: 'bold'}}>{s.name}</td>
+                            <td className="font-mono">{s.cnpj}</td>
+                            <td>{s.contact}</td>
+                            <td className="text-center">
+                              <button onClick={() => handleEditSupplier(s)} className="action-btn edit">[Editar]</button>
+                              <button onClick={() => handleDeleteSupplier(s.id)} className="action-btn delete">[Excluir]</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-          {/* ABA 3: ASSOCIAÇÕES */}
-          {activeTab === 'associations' && (
-            <div>
-              <fieldset className="fieldset">
-                <legend className="legend">VINCULAR PRODUTO E FORNECEDOR</legend>
-                <form onSubmit={handleLink}>
-                  <div className="flex-row">
-                    <div className="form-group" style={{marginBottom: 0}}>
-                      <label style={{width: 'auto', marginRight: '5px'}}>Produto:</label>
-                      <select required className="form-input" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
-                        <option value="">-- Selecione --</option>
-                        {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
-                      </select>
-                    </div>
-                    <div className="form-group" style={{marginBottom: 0}}>
-                      <label style={{width: 'auto', marginRight: '5px'}}>Fornecedor:</label>
-                      <select required className="form-input" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
-                        <option value="">-- Selecione --</option>
-                        {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
-                      </select>
-                    </div>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                      <button type="submit" className="btn-submit">Vincular</button>
-                    </div>
-                  </div>
-                </form>
-              </fieldset>
+              {/* ABA 3: ASSOCIAÇÕES */}
+              {activeTab === 'associations' && (
+                <div>
+                  <fieldset className="fieldset">
+                    <legend className="legend">VINCULAR PRODUTO E FORNECEDOR</legend>
+                    <form onSubmit={handleLink}>
+                      <div className="flex-row">
+                        <div className="form-group" style={{marginBottom: 0}}>
+                          <label style={{width: 'auto', marginRight: '5px'}}>Produto:</label>
+                          <select required className="form-input" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
+                            <option value="">-- Selecione --</option>
+                            {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
+                          </select>
+                        </div>
+                        <div className="form-group" style={{marginBottom: 0}}>
+                          <label style={{width: 'auto', marginRight: '5px'}}>Fornecedor:</label>
+                          <select required className="form-input" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
+                            <option value="">-- Selecione --</option>
+                            {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
+                          </select>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                          <button type="submit" className="btn-submit">Vincular</button>
+                        </div>
+                      </div>
+                    </form>
+                  </fieldset>
 
-              <div className="table-title">Tabela de Associações (N:N)</div>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th className="text-center">ID Relação</th>
-                    <th>Produto</th>
-                    <th>Fornecedor</th>
-                    <th className="text-center">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {associations.length === 0 ? (
-                    <tr><td colSpan="4" className="text-center">Sem vínculos.</td></tr>
-                  ) : (
-                    associations
-                      .map(assoc => {
-                        const p = products.find(prod => prod.id === assoc.productId);
-                        const s = suppliers.find(sup => sup.id === assoc.supplierId);
-                        return (p && s) ? { assoc, p, s } : null;
-                      })
-                      .filter(Boolean)
-                      .map(({ assoc, p, s }) => (
-                        <tr key={assoc.id}>
-                          <td className="text-center font-mono">{assoc.id}</td>
-                          <td>[{p.id}] {p.name}</td>
-                          <td>[{s.id}] {s.name}</td>
-                          <td className="text-center">
-                            <button onClick={() => handleUnlink(assoc.id)} className="action-btn delete">[Remover Vínculo]</button>
-                          </td>
-                        </tr>
-                      ))
-                  )}
-                </tbody>
-              </table>
+                  <div className="table-title">Tabela de Associações (N:N)</div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th className="text-center">ID Relação</th>
+                        <th>Produto</th>
+                        <th>Fornecedor</th>
+                        <th className="text-center">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {associations.length === 0 ? (
+                        <tr><td colSpan="4" className="text-center">Sem vínculos.</td></tr>
+                      ) : (
+                        associations
+                          .map(assoc => {
+                            const p = products.find(prod => prod.id === assoc.productId);
+                            const s = suppliers.find(sup => sup.id === assoc.supplierId);
+                            return (p && s) ? { assoc, p, s } : null;
+                          })
+                          .filter(Boolean)
+                          .map(({ assoc, p, s }) => (
+                            <tr key={assoc.id}>
+                              <td className="text-center font-mono">{assoc.id}</td>
+                              <td>[{p.id}] {p.name}</td>
+                              <td>[{s.id}] {s.name}</td>
+                              <td className="text-center">
+                                <button onClick={() => handleUnlink(assoc.id)} className="action-btn delete">[Remover Vínculo]</button>
+                              </td>
+                            </tr>
+                          ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
+          </main>
+
+          {/* Rodapé */}
+          <footer className="footer">
+            <p>Desenvolvido para a disciplina de <strong>Projeto Integrador</strong> da Faculdade Gran.</p>
+          </footer>
         </div>
-      </main>
+      );
+    }
 
-      {/* Rodapé */}
-      <footer className="footer">
-        <p>Desenvolvido para a disciplina de <strong>Projeto Integrador</strong> da Faculdade Gran.</p>
-      </footer>
-    </div>
-  );
-}
+    // Código que faz o React aparecer na tela
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
