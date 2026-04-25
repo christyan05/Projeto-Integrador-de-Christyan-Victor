@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from 'react';
 
 export default function App() {
@@ -100,58 +99,53 @@ export default function App() {
   };
 
   // ==========================================
-  // RENDERIZAÇÃO DA INTERFACE (UI) + ESTILOS INJETADOS
+  // RENDERIZAÇÃO DA INTERFACE (UI) + ESTILOS
   // ==========================================
   return (
     <div className="app-container">
-      {/* CSS 100% INDEPENDENTE EMBUTIDO NO COMPONENTE */}
+      {/* CSS INDEPENDENTE: Garante o visual sem precisar instalar Tailwind ou outras bibliotecas */}
       <style dangerouslySetInnerHTML={{__html: `
-        .app-container { min-height: 100vh; background-color: #f9f9f9; font-family: "Times New Roman", Times, serif; color: black; padding: 20px; box-sizing: border-box; }
-        .header { border-bottom: 4px solid black; padding-bottom: 16px; margin-bottom: 32px; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
-        .header h1 { font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-        .header h2 { font-size: 18px; margin-top: 8px; font-style: italic; font-weight: normal; }
-        .status-badge { font-family: monospace; font-size: 14px; border: 1px dashed #666; padding: 4px 16px; background: white; display: inline-block; margin-top: 16px; }
-        .main-content { max-width: 900px; margin: 0 auto; border: 2px solid black; padding: 24px; background: white; box-shadow: 6px 6px 0px black; }
-        .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid black; padding-bottom: 16px; }
-        .nav span { font-weight: bold; margin-right: 8px; }
-        .nav button { padding: 6px 12px; border: 1px solid black; font-family: Arial, sans-serif; font-size: 14px; cursor: pointer; background: #e0e0e0; color: black; transition: background 0.2s; }
-        .nav button.active { background: black; color: white; font-weight: bold; }
-        .nav button:hover:not(.active) { background: #d0d0d0; }
-        .content-area { font-family: Arial, sans-serif; }
-        .fieldset { border: 1px solid black; padding: 16px; margin-bottom: 24px; background: #fafafa; }
-        .legend { font-weight: bold; padding: 0 4px; font-size: 14px; }
-        .form-group { margin-bottom: 12px; display: flex; align-items: flex-start; font-size: 14px; flex-direction: column; }
+        .app-container { min-height: 100vh; background-color: #f5f5f5; font-family: "Times New Roman", Times, serif; color: #000; padding: 20px; box-sizing: border-box; }
+        .header { border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
+        .header h1 { font-size: 26px; font-weight: bold; text-transform: uppercase; margin: 0; }
+        .header h2 { font-size: 16px; margin-top: 5px; font-style: italic; font-weight: normal; }
+        .main-content { max-width: 900px; margin: 0 auto; border: 1px solid #000; padding: 20px; background: #fff; box-shadow: 4px 4px 0px #000; }
+        .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 15px; }
+        .nav span { font-weight: bold; margin-right: 10px; font-family: Arial, sans-serif; font-size: 14px; }
+        .nav button { padding: 5px 15px; border: 1px solid #000; font-family: Arial, sans-serif; font-size: 14px; cursor: pointer; background: #eee; color: #000; }
+        .nav button.active { background: #000; color: #fff; font-weight: bold; }
+        .nav button:hover:not(.active) { background: #ddd; }
+        .content-area { font-family: Arial, sans-serif; font-size: 14px; }
+        .fieldset { border: 1px solid #000; padding: 15px; margin-bottom: 25px; background: #fdfdfd; }
+        .legend { font-weight: bold; padding: 0 5px; font-size: 13px; }
+        .form-group { margin-bottom: 10px; display: flex; align-items: flex-start; flex-direction: column; }
         @media (min-width: 600px) { .form-group { flex-direction: row; align-items: center; } }
-        .form-group label { font-weight: bold; width: 160px; flex-shrink: 0; margin-bottom: 4px; }
-        .form-input { border: 1px solid black; padding: 6px; width: 100%; max-width: 400px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
-        textarea.form-input { resize: vertical; min-height: 60px; }
-        .form-actions { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #999; }
-        .btn-submit { background: #e0e0e0; border: 1px solid black; padding: 6px 16px; font-weight: bold; cursor: pointer; font-family: inherit; }
-        .btn-submit:hover { background: #d0d0d0; }
-        .btn-cancel { background: white; border: 1px solid black; padding: 6px 16px; cursor: pointer; margin-left: 8px; font-family: inherit; }
+        .form-group label { font-weight: bold; width: 150px; flex-shrink: 0; margin-bottom: 5px; }
+        .form-input { border: 1px solid #000; padding: 5px; width: 100%; max-width: 400px; font-family: inherit; font-size: 14px; }
+        textarea.form-input { resize: vertical; min-height: 50px; }
+        .form-actions { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #000; }
+        .btn-submit { background: #eee; border: 1px solid #000; padding: 5px 15px; font-weight: bold; cursor: pointer; }
+        .btn-submit:hover { background: #ddd; }
+        .btn-cancel { background: #fff; border: 1px solid #000; padding: 5px 15px; cursor: pointer; margin-left: 10px; }
         .btn-cancel:hover { background: #f0f0f0; }
-        .table-title { font-weight: bold; margin-bottom: 8px; border-bottom: 2px solid black; display: inline-block; font-size: 16px; }
-        .table { width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 14px; margin-top: 8px; box-shadow: 2px 2px 0px black; }
-        .table th { background: #e0e0e0; border: 1px solid black; padding: 8px; text-align: left; }
-        .table td { border: 1px solid black; padding: 8px; }
-        .table tr:nth-child(even) { background-color: #fafafa; }
-        .table tr:hover { background-color: #f0f0f0; }
+        .table-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #000; font-size: 13px; margin-top: 5px; }
+        .table th { background: #eee; border: 1px solid #000; padding: 8px; text-align: left; }
+        .table td { border: 1px solid #000; padding: 8px; }
+        .table tr:nth-child(even) { background-color: #f9f9f9; }
         .text-center { text-align: center; }
         .font-mono { font-family: monospace; }
-        .action-btn { background: none; border: none; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 14px; padding: 0; text-decoration: underline; }
-        .action-btn.edit { color: #0000cc; margin-right: 12px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-weight: bold; font-size: 13px; padding: 0; text-decoration: underline; }
+        .action-btn.edit { color: #0000cc; margin-right: 10px; }
         .action-btn.delete { color: #cc0000; }
-        .footer { text-align: center; font-size: 14px; margin-top: 48px; font-family: Arial, sans-serif; border-top: 1px solid black; max-width: 900px; margin-left: auto; margin-right: auto; padding-top: 16px; color: #333; }
-        .flex-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .footer { text-align: center; font-size: 13px; margin-top: 40px; font-family: Arial, sans-serif; border-top: 1px solid #000; max-width: 900px; margin-left: auto; margin-right: auto; padding-top: 15px; color: #000; }
+        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
       `}} />
 
       {/* Cabeçalho */}
       <header className="header">
-        <h1>Sistema de Gestão de Estoque</h1>
-        <h2>Trabalho Prático - Projeto Integrador (Etapa 3)</h2>
-        <div className="status-badge">
-          Status da Conexão: Simulando Backend em Memória (Mock)
-        </div>
+        <h1>Sistema de Gestão - Frontend</h1>
+        <h2>Trabalho Prático - Projeto Integrador</h2>
       </header>
 
       {/* Caixa Principal */}
@@ -159,7 +153,7 @@ export default function App() {
         
         {/* Navegação */}
         <div className="nav">
-          <span>Navegação do Sistema:</span>
+          <span>Menu:</span>
           <button 
             onClick={() => setActiveTab('products')} 
             className={activeTab === 'products' ? 'active' : ''}
@@ -187,7 +181,7 @@ export default function App() {
           {activeTab === 'products' && (
             <div>
               <fieldset className="fieldset">
-                <legend className="legend">{isProdEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - PRODUTO'}</legend>
+                <legend className="legend">{isProdEditing ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</legend>
                 <form onSubmit={handleSaveProduct}>
                   <div className="form-group">
                     <label>Nome do Produto:</label>
@@ -198,16 +192,16 @@ export default function App() {
                     <input required type="text" className="form-input" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label>Preço (€):</label>
-                    <input required type="number" step="0.01" className="form-input" style={{maxWidth: '120px'}} value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
+                    <label>Preço (R$):</label>
+                    <input required type="number" step="0.01" className="form-input" style={{maxWidth: '100px'}} value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label style={{alignSelf: 'flex-start'}}>Descrição detalhada:</label>
-                    <textarea required className="form-input" rows="3" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
+                    <label style={{alignSelf: 'flex-start'}}>Descrição:</label>
+                    <textarea required className="form-input" rows="2" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
                   </div>
                   <div className="form-actions">
                     <button type="submit" className="btn-submit">
-                      {isProdEditing ? 'Guardar Alterações' : 'Adicionar ao Banco de Dados'}
+                      {isProdEditing ? 'Salvar Edição' : 'Cadastrar Produto'}
                     </button>
                     {isProdEditing && (
                       <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="btn-cancel">Cancelar</button>
@@ -216,11 +210,11 @@ export default function App() {
                 </form>
               </fieldset>
 
-              <div className="table-title">Tabela de Produtos Registados</div>
+              <div className="table-title">Lista de Produtos</div>
               <table className="table">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th className="text-center">ID</th>
                     <th>Nome</th>
                     <th>Cód. Barras</th>
                     <th>Preço</th>
@@ -229,17 +223,17 @@ export default function App() {
                 </thead>
                 <tbody>
                   {products.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center" style={{fontStyle: 'italic'}}>A tabela está vazia.</td></tr>
+                    <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
                   ) : (
                     products.map(p => (
                       <tr key={p.id}>
                         <td className="text-center">{p.id}</td>
                         <td style={{fontWeight: 'bold'}}>{p.name}</td>
-                        <td className="font-mono" style={{fontSize: '12px'}}>{p.barcode}</td>
-                        <td>€ {Number(p.price).toFixed(2)}</td>
+                        <td className="font-mono">{p.barcode}</td>
+                        <td>R$ {Number(p.price).toFixed(2)}</td>
                         <td className="text-center">
                           <button onClick={() => handleEditProduct(p)} className="action-btn edit">[Editar]</button>
-                          <button onClick={() => handleDeleteProduct(p.id)} className="action-btn delete">[Eliminar]</button>
+                          <button onClick={() => handleDeleteProduct(p.id)} className="action-btn delete">[Excluir]</button>
                         </td>
                       </tr>
                     ))
@@ -253,18 +247,18 @@ export default function App() {
           {activeTab === 'suppliers' && (
             <div>
               <fieldset className="fieldset">
-                <legend className="legend">{isSuppEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - FORNECEDOR'}</legend>
+                <legend className="legend">{isSuppEditing ? 'EDITAR FORNECEDOR' : 'NOVO FORNECEDOR'}</legend>
                 <form onSubmit={handleSaveSupplier}>
                   <div className="form-group">
                     <label>Razão Social:</label>
                     <input required type="text" className="form-input" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label>CNPJ / NIF:</label>
+                    <label>CNPJ:</label>
                     <input required type="text" className="form-input" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label>Contacto (E-mail):</label>
+                    <label>E-mail:</label>
                     <input required type="email" className="form-input" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
                   </div>
                   <div className="form-group">
@@ -273,7 +267,7 @@ export default function App() {
                   </div>
                   <div className="form-actions">
                     <button type="submit" className="btn-submit">
-                      {isSuppEditing ? 'Guardar Alterações' : 'Adicionar Fornecedor'}
+                      {isSuppEditing ? 'Salvar Edição' : 'Cadastrar Fornecedor'}
                     </button>
                     {isSuppEditing && (
                       <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="btn-cancel">Cancelar</button>
@@ -282,30 +276,30 @@ export default function App() {
                 </form>
               </fieldset>
 
-              <div className="table-title">Tabela de Fornecedores Registados</div>
+              <div className="table-title">Lista de Fornecedores</div>
               <table className="table">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th className="text-center">ID</th>
                     <th>Razão Social</th>
-                    <th>CNPJ/NIF</th>
-                    <th>Contacto</th>
+                    <th>CNPJ</th>
+                    <th>E-mail</th>
                     <th className="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {suppliers.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center" style={{fontStyle: 'italic'}}>A tabela está vazia.</td></tr>
+                    <tr><td colSpan="5" className="text-center">Vazio.</td></tr>
                   ) : (
                     suppliers.map(s => (
                       <tr key={s.id}>
                         <td className="text-center">{s.id}</td>
                         <td style={{fontWeight: 'bold'}}>{s.name}</td>
-                        <td className="font-mono" style={{fontSize: '12px'}}>{s.cnpj}</td>
+                        <td className="font-mono">{s.cnpj}</td>
                         <td>{s.contact}</td>
                         <td className="text-center">
                           <button onClick={() => handleEditSupplier(s)} className="action-btn edit">[Editar]</button>
-                          <button onClick={() => handleDeleteSupplier(s.id)} className="action-btn delete">[Eliminar]</button>
+                          <button onClick={() => handleDeleteSupplier(s.id)} className="action-btn delete">[Excluir]</button>
                         </td>
                       </tr>
                     ))
@@ -319,45 +313,43 @@ export default function App() {
           {activeTab === 'associations' && (
             <div>
               <fieldset className="fieldset">
-                <legend className="legend">LIGAR PRODUTO A FORNECEDOR (N:N)</legend>
+                <legend className="legend">VINCULAR PRODUTO E FORNECEDOR</legend>
                 <form onSubmit={handleLink}>
                   <div className="flex-row">
-                    <div className="form-group col" style={{marginBottom: 0}}>
-                      <label>Selecione o Produto (ID - Nome):</label>
+                    <div className="form-group" style={{marginBottom: 0}}>
+                      <label style={{width: 'auto', marginRight: '5px'}}>Produto:</label>
                       <select required className="form-input" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
-                        <option value="">-- Selecione na lista --</option>
+                        <option value="">-- Selecione --</option>
                         {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
                       </select>
                     </div>
-                    <div className="form-group col" style={{marginBottom: 0}}>
-                      <label>Selecione o Fornecedor:</label>
+                    <div className="form-group" style={{marginBottom: 0}}>
+                      <label style={{width: 'auto', marginRight: '5px'}}>Fornecedor:</label>
                       <select required className="form-input" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
-                        <option value="">-- Selecione na lista --</option>
+                        <option value="">-- Selecione --</option>
                         {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
                       </select>
                     </div>
-                    <div style={{display: 'flex', alignItems: 'flex-end'}}>
-                      <button type="submit" className="btn-submit">
-                        Gerar Vínculo
-                      </button>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                      <button type="submit" className="btn-submit">Vincular</button>
                     </div>
                   </div>
                 </form>
               </fieldset>
 
-              <div className="table-title">Lista de Vínculos (Produtos & Fornecedores)</div>
+              <div className="table-title">Tabela de Associações (N:N)</div>
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="text-center">Ref. Associação</th>
-                    <th>Produto Relacionado</th>
-                    <th>Fornecedor Relacionado</th>
-                    <th className="text-center">Opções</th>
+                    <th className="text-center">ID Relação</th>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th className="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {associations.length === 0 ? (
-                    <tr><td colSpan="4" className="text-center" style={{fontStyle: 'italic'}}>Nenhum vínculo registado.</td></tr>
+                    <tr><td colSpan="4" className="text-center">Sem vínculos.</td></tr>
                   ) : (
                     associations
                       .map(assoc => {
@@ -372,7 +364,7 @@ export default function App() {
                           <td>[{p.id}] {p.name}</td>
                           <td>[{s.id}] {s.name}</td>
                           <td className="text-center">
-                            <button onClick={() => handleUnlink(assoc.id)} className="action-btn delete">[Desfazer Vínculo]</button>
+                            <button onClick={() => handleUnlink(assoc.id)} className="action-btn delete">[Remover Vínculo]</button>
                           </td>
                         </tr>
                       ))
@@ -386,8 +378,7 @@ export default function App() {
 
       {/* Rodapé */}
       <footer className="footer">
-        <p>Desenvolvido como requisito parcial para a disciplina de <strong>Projeto Integrador</strong>.</p>
-        <p>Faculdade Gran</p>
+        <p>Desenvolvido para a disciplina de <strong>Projeto Integrador</strong> da Faculdade Gran.</p>
       </footer>
     </div>
   );
