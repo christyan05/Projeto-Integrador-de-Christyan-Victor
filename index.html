@@ -1,196 +1,85 @@
 "use client";
 import React, { useState } from 'react';
 
-// ==========================================
-// COMPONENTE: PÁGINA DE PRODUTOS
-// ==========================================
-const ProductPage = ({ products, setProducts, associations, setAssociations }) => {
-  const [formData, setFormData] = useState({ id: null, name: '', description: '', price: '', barcode: '' });
-  const [isEditing, setIsEditing] = useState(false);
+export default function App() {
+  // ==========================================
+  // ESTADOS GERAIS DA APLICAÇÃO
+  // ==========================================
+  const [activeTab, setActiveTab] = useState('products');
 
-  const handleSave = (e) => {
+  // Simulando Banco de Dados
+  const [products, setProducts] = useState([
+    { id: 1, name: 'Computador Portátil Dell Inspiron', description: 'Ecrã 15 polegadas, 16GB RAM', price: '4500.00', barcode: '789123456001' },
+    { id: 2, name: 'Rato Sem Fios Logitech', description: 'Rato ergonómico bluetooth', price: '150.00', barcode: '789123456002' },
+  ]);
+
+  const [suppliers, setSuppliers] = useState([
+    { id: 1, name: 'Dell Computadores Lda', cnpj: '00.000.000/0001-00', address: 'Av. Industrial, 100 - Lisboa', contact: 'contato@dell.pt' },
+    { id: 2, name: 'Logitech Distribuidora', cnpj: '11.111.111/0001-11', address: 'Rua da Tecnologia, 50 - Porto', contact: 'vendas@logitech.pt' },
+  ]);
+
+  const [associations, setAssociations] = useState([
+    { id: 1, productId: 1, supplierId: 1 },
+    { id: 2, productId: 2, supplierId: 2 },
+  ]);
+
+  // ==========================================
+  // ESTADOS E FUNÇÕES: PRODUTOS
+  // ==========================================
+  const [prodFormData, setProdFormData] = useState({ id: null, name: '', description: '', price: '', barcode: '' });
+  const [isProdEditing, setIsProdEditing] = useState(false);
+
+  const handleSaveProduct = (e) => {
     e.preventDefault();
-    if (isEditing) {
-      setProducts(products.map(p => p.id === formData.id ? formData : p));
+    if (isProdEditing) {
+      setProducts(products.map(p => p.id === prodFormData.id ? prodFormData : p));
     } else {
-      setProducts([...products, { ...formData, id: Date.now() }]);
+      setProducts([...products, { ...prodFormData, id: Date.now() }]);
     }
-    setFormData({ id: null, name: '', description: '', price: '', barcode: '' });
-    setIsEditing(false);
+    setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' });
+    setIsProdEditing(false);
   };
 
-  const handleEdit = (product) => {
-    setFormData(product);
-    setIsEditing(true);
+  const handleEditProduct = (product) => {
+    setProdFormData(product);
+    setIsProdEditing(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDeleteProduct = (id) => {
     setProducts(products.filter(p => p.id !== id));
-    // Remove associações relacionadas
     setAssociations(associations.filter(a => a.productId !== id));
   };
 
-  return (
-    <div className="mt-4">
-      <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-        <legend className="font-bold px-1 text-sm">{isEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - PRODUTO'}</legend>
-        <form onSubmit={handleSave} className="flex flex-col gap-3 text-sm">
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Nome do Produto:</label>
-            <input required type="text" className="border border-black p-1 w-full max-w-sm" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Código de Barras:</label>
-            <input required type="text" className="border border-black p-1 w-full max-w-sm" value={formData.barcode} onChange={e => setFormData({ ...formData, barcode: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Preço (R$):</label>
-            <input required type="number" step="0.01" className="border border-black p-1 w-32" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36 align-top">Descrição detalhada:</label>
-            <textarea required className="border border-black p-1 w-full max-w-sm" rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
-          </div>
-          <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
-            <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
-              {isEditing ? 'Salvar Alterações' : 'Adicionar ao Banco de Dados'}
-            </button>
-            {isEditing && <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: null, name: '', description: '', price: '', barcode: '' }) }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>}
-          </div>
-        </form>
-      </fieldset>
+  // ==========================================
+  // ESTADOS E FUNÇÕES: FORNECEDORES
+  // ==========================================
+  const [suppFormData, setSuppFormData] = useState({ id: null, name: '', cnpj: '', address: '', contact: '' });
+  const [isSuppEditing, setIsSuppEditing] = useState(false);
 
-      <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Produtos Cadastrados</h3>
-      <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-        <thead className="bg-[#e0e0e0]">
-          <tr>
-            <th className="border border-black p-2 text-left">ID</th>
-            <th className="border border-black p-2 text-left">Nome</th>
-            <th className="border border-black p-2 text-left">Cód. Barras</th>
-            <th className="border border-black p-2 text-left">Preço</th>
-            <th className="border border-black p-2 text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length === 0 ? (
-            <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
-          ) : (
-            products.map(p => (
-              <tr key={p.id} className="hover:bg-[#f5f5f5]">
-                <td className="border border-black p-2 text-center">{p.id}</td>
-                <td className="border border-black p-2 font-semibold">{p.name}</td>
-                <td className="border border-black p-2 font-mono text-xs">{p.barcode}</td>
-                <td className="border border-black p-2">R$ {Number(p.price).toFixed(2)}</td>
-                <td className="border border-black p-2 text-center">
-                  <button onClick={() => handleEdit(p)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
-                  <button onClick={() => handleDelete(p.id)} className="text-red-800 hover:text-red-600 font-bold">[Excluir]</button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-// ==========================================
-// COMPONENTE: PÁGINA DE FORNECEDORES
-// ==========================================
-const SupplierPage = ({ suppliers, setSuppliers, associations, setAssociations }) => {
-  const [formData, setFormData] = useState({ id: null, name: '', cnpj: '', address: '', contact: '' });
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleSave = (e) => {
+  const handleSaveSupplier = (e) => {
     e.preventDefault();
-    if (isEditing) {
-      setSuppliers(suppliers.map(s => s.id === formData.id ? formData : s));
+    if (isSuppEditing) {
+      setSuppliers(suppliers.map(s => s.id === suppFormData.id ? suppFormData : s));
     } else {
-      setSuppliers([...suppliers, { ...formData, id: Date.now() }]);
+      setSuppliers([...suppliers, { ...suppFormData, id: Date.now() }]);
     }
-    setFormData({ id: null, name: '', cnpj: '', address: '', contact: '' });
-    setIsEditing(false);
+    setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' });
+    setIsSuppEditing(false);
   };
 
-  const handleEdit = (supplier) => {
-    setFormData(supplier);
-    setIsEditing(true);
+  const handleEditSupplier = (supplier) => {
+    setSuppFormData(supplier);
+    setIsSuppEditing(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDeleteSupplier = (id) => {
     setSuppliers(suppliers.filter(s => s.id !== id));
-    // Remove associações relacionadas
     setAssociations(associations.filter(a => a.supplierId !== id));
   };
 
-  return (
-    <div className="mt-4">
-      <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-        <legend className="font-bold px-1 text-sm">{isEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - FORNECEDOR'}</legend>
-        <form onSubmit={handleSave} className="flex flex-col gap-3 text-sm">
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Razão Social:</label>
-            <input required type="text" className="border border-black p-1 w-full max-w-sm" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">CNPJ:</label>
-            <input required type="text" className="border border-black p-1 w-full max-w-sm" value={formData.cnpj} onChange={e => setFormData({ ...formData, cnpj: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Contato (E-mail):</label>
-            <input required type="email" className="border border-black p-1 w-full max-w-sm" value={formData.contact} onChange={e => setFormData({ ...formData, contact: e.target.value })} />
-          </div>
-          <div>
-            <label className="font-semibold mr-2 inline-block w-36">Endereço:</label>
-            <input required type="text" className="border border-black p-1 w-full max-w-sm" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
-          </div>
-          <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
-            <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
-              {isEditing ? 'Salvar Alterações' : 'Adicionar Fornecedor'}
-            </button>
-            {isEditing && <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }) }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>}
-          </div>
-        </form>
-      </fieldset>
-
-      <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Fornecedores Cadastrados</h3>
-      <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-        <thead className="bg-[#e0e0e0]">
-          <tr>
-            <th className="border border-black p-2 text-left">ID</th>
-            <th className="border border-black p-2 text-left">Razão Social</th>
-            <th className="border border-black p-2 text-left">CNPJ</th>
-            <th className="border border-black p-2 text-left">Contato</th>
-            <th className="border border-black p-2 text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {suppliers.length === 0 ? (
-            <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
-          ) : (
-            suppliers.map(s => (
-              <tr key={s.id} className="hover:bg-[#f5f5f5]">
-                <td className="border border-black p-2 text-center">{s.id}</td>
-                <td className="border border-black p-2 font-semibold">{s.name}</td>
-                <td className="border border-black p-2 font-mono text-xs">{s.cnpj}</td>
-                <td className="border border-black p-2">{s.contact}</td>
-                <td className="border border-black p-2 text-center">
-                  <button onClick={() => handleEdit(s)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
-                  <button onClick={() => handleDelete(s.id)} className="text-red-800 hover:text-red-600 font-bold">[Excluir]</button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-// ==========================================
-// COMPONENTE: PÁGINA DE ASSOCIAÇÕES (N:N)
-// ==========================================
-const AssociationPage = ({ products, suppliers, associations, setAssociations }) => {
+  // ==========================================
+  // ESTADOS E FUNÇÕES: ASSOCIAÇÕES
+  // ==========================================
   const [selectedProduct, setSelectedProduct] = useState('');
   const [selectedSupplier, setSelectedSupplier] = useState('');
 
@@ -199,7 +88,7 @@ const AssociationPage = ({ products, suppliers, associations, setAssociations })
     if (!selectedProduct || !selectedSupplier) return;
     
     const exists = associations.find(a => a.productId === Number(selectedProduct) && a.supplierId === Number(selectedSupplier));
-    if (exists) return; // Evita duplicatas
+    if (exists) return; 
 
     setAssociations([...associations, { id: Date.now(), productId: Number(selectedProduct), supplierId: Number(selectedSupplier) }]);
     setSelectedProduct('');
@@ -210,94 +99,12 @@ const AssociationPage = ({ products, suppliers, associations, setAssociations })
     setAssociations(associations.filter(a => a.id !== id));
   };
 
-  return (
-    <div className="mt-4">
-      <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-        <legend className="font-bold px-1 text-sm">LIGAR PRODUTO AO FORNECEDOR (N:N)</legend>
-        <form onSubmit={handleLink} className="flex flex-col md:flex-row gap-4 items-end text-sm">
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">Selecione o Produto (ID - Nome):</label>
-            <select required className="border border-black p-1 w-64 bg-white" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
-              <option value="">-- Selecione na lista --</option>
-              {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
-            </select>
-          </div>
-          <div className="flex flex-col">
-            <label className="font-semibold mb-1">Selecione o Fornecedor:</label>
-            <select required className="border border-black p-1 w-64 bg-white" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
-              <option value="">-- Selecione na lista --</option>
-              {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
-            </select>
-          </div>
-          <div>
-            <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
-              Gerar Vínculo
-            </button>
-          </div>
-        </form>
-      </fieldset>
-
-      <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Lista de Vínculos (Produtos & Fornecedores)</h3>
-      <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-        <thead className="bg-[#e0e0e0]">
-          <tr>
-            <th className="border border-black p-2 text-center">Ref. Associação</th>
-            <th className="border border-black p-2 text-left">Produto Relacionado</th>
-            <th className="border border-black p-2 text-left">Fornecedor Relacionado</th>
-            <th className="border border-black p-2 text-center">Opções</th>
-          </tr>
-        </thead>
-        <tbody>
-          {associations.length === 0 ? (
-            <tr><td colSpan="4" className="border border-black p-2 text-center italic">Nenhum vínculo registrado.</td></tr>
-          ) : (
-            associations.map(assoc => {
-              const p = products.find(prod => prod.id === assoc.productId);
-              const s = suppliers.find(sup => sup.id === assoc.supplierId);
-              if (!p || !s) return null;
-
-              return (
-                <tr key={assoc.id} className="hover:bg-[#f5f5f5]">
-                  <td className="border border-black p-2 text-center font-mono">{assoc.id}</td>
-                  <td className="border border-black p-2">[{p.id}] {p.name}</td>
-                  <td className="border border-black p-2">[{s.id}] {s.name}</td>
-                  <td className="border border-black p-2 text-center">
-                    <button onClick={() => handleUnlink(assoc.id)} className="text-red-800 hover:text-red-600 font-bold">[Desfazer Vínculo]</button>
-                  </td>
-                </tr>
-              )
-            })
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-// ==========================================
-// COMPONENTE PRINCIPAL (RAIZ)
-// ==========================================
-export default function App() {
-  const [activeTab, setActiveTab] = useState('products');
-
-  // --- MOCK DATABASE ---
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Notebook Dell Inspiron', description: 'Notebook 15 polegadas, 16GB RAM', price: '4500.00', barcode: '789123456001' },
-    { id: 2, name: 'Mouse Sem Fio Logitech', description: 'Mouse ergonômico bluetooth', price: '150.00', barcode: '789123456002' },
-  ]);
-
-  const [suppliers, setSuppliers] = useState([
-    { id: 1, name: 'Dell Computadores do Brasil', cnpj: '00.000.000/0001-00', address: 'Av. Industrial, 100 - SP', contact: 'contato@dell.com' },
-    { id: 2, name: 'Logitech Distribuidora', cnpj: '11.111.111/0001-11', address: 'Rua da Tecnologia, 50 - RJ', contact: 'vendas@logitech.com' },
-  ]);
-
-  const [associations, setAssociations] = useState([
-    { id: 1, productId: 1, supplierId: 1 },
-    { id: 2, productId: 2, supplierId: 2 },
-  ]);
-
+  // ==========================================
+  // RENDERIZAÇÃO DA INTERFACE (UI)
+  // ==========================================
   return (
     <div className="min-h-screen bg-[#f9f9f9] font-serif text-black p-4 md:p-8">
+      {/* Cabeçalho */}
       <header className="border-b-4 border-black pb-4 mb-8 max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold uppercase text-center tracking-wide">Sistema de Gestão de Estoque</h1>
         <h2 className="text-lg text-center mt-2 italic">Trabalho Prático - Projeto Integrador (Etapa 3)</h2>
@@ -308,7 +115,10 @@ export default function App() {
         </div>
       </header>
 
+      {/* Caixa Principal */}
       <main className="max-w-5xl mx-auto border-2 border-black p-6 bg-white shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+        
+        {/* Navegação */}
         <div className="flex flex-wrap items-center gap-2 mb-6 border-b-2 border-black pb-4">
           <span className="font-bold mr-2">Navegação do Sistema:</span>
           <button 
@@ -331,19 +141,209 @@ export default function App() {
           </button>
         </div>
 
+        {/* Conteúdo Dinâmico */}
         <div className="font-sans">
+          
+          {/* ABA 1: PRODUTOS */}
           {activeTab === 'products' && (
-            <ProductPage products={products} setProducts={setProducts} associations={associations} setAssociations={setAssociations} />
+            <div className="mt-4">
+              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
+                <legend className="font-bold px-1 text-sm">{isProdEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - PRODUTO'}</legend>
+                <form onSubmit={handleSaveProduct} className="flex flex-col gap-3 text-sm">
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Nome do Produto:</label>
+                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={prodFormData.name} onChange={e => setProdFormData({ ...prodFormData, name: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Código de Barras:</label>
+                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Preço (€):</label>
+                    <input required type="number" step="0.01" className="border border-black p-1 w-32" value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36 align-top">Descrição detalhada:</label>
+                    <textarea required className="border border-black p-1 w-full max-w-sm" rows="3" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
+                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
+                      {isProdEditing ? 'Guardar Alterações' : 'Adicionar ao Banco de Dados'}
+                    </button>
+                    {isProdEditing && (
+                      <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>
+                    )}
+                  </div>
+                </form>
+              </fieldset>
+
+              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Produtos Registados</h3>
+              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                <thead className="bg-[#e0e0e0]">
+                  <tr>
+                    <th className="border border-black p-2 text-left">ID</th>
+                    <th className="border border-black p-2 text-left">Nome</th>
+                    <th className="border border-black p-2 text-left">Cód. Barras</th>
+                    <th className="border border-black p-2 text-left">Preço</th>
+                    <th className="border border-black p-2 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.length === 0 ? (
+                    <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
+                  ) : (
+                    products.map(p => (
+                      <tr key={p.id} className="hover:bg-[#f5f5f5]">
+                        <td className="border border-black p-2 text-center">{p.id}</td>
+                        <td className="border border-black p-2 font-semibold">{p.name}</td>
+                        <td className="border border-black p-2 font-mono text-xs">{p.barcode}</td>
+                        <td className="border border-black p-2">€ {Number(p.price).toFixed(2)}</td>
+                        <td className="border border-black p-2 text-center">
+                          <button onClick={() => handleEditProduct(p)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
+                          <button onClick={() => handleDeleteProduct(p.id)} className="text-red-800 hover:text-red-600 font-bold">[Eliminar]</button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
+
+          {/* ABA 2: FORNECEDORES */}
           {activeTab === 'suppliers' && (
-            <SupplierPage suppliers={suppliers} setSuppliers={setSuppliers} associations={associations} setAssociations={setAssociations} />
+            <div className="mt-4">
+              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
+                <legend className="font-bold px-1 text-sm">{isSuppEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - FORNECEDOR'}</legend>
+                <form onSubmit={handleSaveSupplier} className="flex flex-col gap-3 text-sm">
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Razão Social:</label>
+                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">CNPJ / NIF:</label>
+                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Contacto (E-mail):</label>
+                    <input required type="email" className="border border-black p-1 w-full max-w-sm" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="font-semibold mr-2 inline-block w-36">Endereço:</label>
+                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.address} onChange={e => setSuppFormData({ ...suppFormData, address: e.target.value })} />
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
+                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
+                      {isSuppEditing ? 'Guardar Alterações' : 'Adicionar Fornecedor'}
+                    </button>
+                    {isSuppEditing && (
+                      <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>
+                    )}
+                  </div>
+                </form>
+              </fieldset>
+
+              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Fornecedores Registados</h3>
+              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                <thead className="bg-[#e0e0e0]">
+                  <tr>
+                    <th className="border border-black p-2 text-left">ID</th>
+                    <th className="border border-black p-2 text-left">Razão Social</th>
+                    <th className="border border-black p-2 text-left">CNPJ/NIF</th>
+                    <th className="border border-black p-2 text-left">Contacto</th>
+                    <th className="border border-black p-2 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {suppliers.length === 0 ? (
+                    <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
+                  ) : (
+                    suppliers.map(s => (
+                      <tr key={s.id} className="hover:bg-[#f5f5f5]">
+                        <td className="border border-black p-2 text-center">{s.id}</td>
+                        <td className="border border-black p-2 font-semibold">{s.name}</td>
+                        <td className="border border-black p-2 font-mono text-xs">{s.cnpj}</td>
+                        <td className="border border-black p-2">{s.contact}</td>
+                        <td className="border border-black p-2 text-center">
+                          <button onClick={() => handleEditSupplier(s)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
+                          <button onClick={() => handleDeleteSupplier(s.id)} className="text-red-800 hover:text-red-600 font-bold">[Eliminar]</button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
+
+          {/* ABA 3: ASSOCIAÇÕES */}
           {activeTab === 'associations' && (
-            <AssociationPage products={products} suppliers={suppliers} associations={associations} setAssociations={setAssociations} />
+            <div className="mt-4">
+              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
+                <legend className="font-bold px-1 text-sm">LIGAR PRODUTO A FORNECEDOR (N:N)</legend>
+                <form onSubmit={handleLink} className="flex flex-col md:flex-row gap-4 items-end text-sm">
+                  <div className="flex flex-col">
+                    <label className="font-semibold mb-1">Selecione o Produto (ID - Nome):</label>
+                    <select required className="border border-black p-1 w-64 bg-white" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
+                      <option value="">-- Selecione na lista --</option>
+                      {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-semibold mb-1">Selecione o Fornecedor:</label>
+                    <select required className="border border-black p-1 w-64 bg-white" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
+                      <option value="">-- Selecione na lista --</option>
+                      {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
+                      Gerar Vínculo
+                    </button>
+                  </div>
+                </form>
+              </fieldset>
+
+              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Lista de Vínculos (Produtos & Fornecedores)</h3>
+              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                <thead className="bg-[#e0e0e0]">
+                  <tr>
+                    <th className="border border-black p-2 text-center">Ref. Associação</th>
+                    <th className="border border-black p-2 text-left">Produto Relacionado</th>
+                    <th className="border border-black p-2 text-left">Fornecedor Relacionado</th>
+                    <th className="border border-black p-2 text-center">Opções</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {associations.length === 0 ? (
+                    <tr><td colSpan="4" className="border border-black p-2 text-center italic">Nenhum vínculo registado.</td></tr>
+                  ) : (
+                    associations
+                      .map(assoc => {
+                        const p = products.find(prod => prod.id === assoc.productId);
+                        const s = suppliers.find(sup => sup.id === assoc.supplierId);
+                        return (p && s) ? { assoc, p, s } : null;
+                      })
+                      .filter(Boolean)
+                      .map(({ assoc, p, s }) => (
+                        <tr key={assoc.id} className="hover:bg-[#f5f5f5]">
+                          <td className="border border-black p-2 text-center font-mono">{assoc.id}</td>
+                          <td className="border border-black p-2">[{p.id}] {p.name}</td>
+                          <td className="border border-black p-2">[{s.id}] {s.name}</td>
+                          <td className="border border-black p-2 text-center">
+                            <button onClick={() => handleUnlink(assoc.id)} className="text-red-800 hover:text-red-600 font-bold">[Desfazer Vínculo]</button>
+                          </td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </main>
 
+      {/* Rodapé */}
       <footer className="text-center text-sm mt-12 text-gray-800 font-sans border-t border-black max-w-5xl mx-auto pt-4">
         <p>Desenvolvido como requisito parcial para a disciplina de <strong>Projeto Integrador</strong>.</p>
         <p>Faculdade Gran</p>
