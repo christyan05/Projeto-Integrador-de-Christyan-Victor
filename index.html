@@ -100,107 +100,146 @@ export default function App() {
   };
 
   // ==========================================
-  // RENDERIZAÇÃO DA INTERFACE (UI)
+  // RENDERIZAÇÃO DA INTERFACE (UI) + ESTILOS INJETADOS
   // ==========================================
   return (
-    <div className="min-h-screen bg-[#f9f9f9] font-serif text-black p-4 md:p-8">
+    <div className="app-container">
+      {/* CSS 100% INDEPENDENTE EMBUTIDO NO COMPONENTE */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .app-container { min-height: 100vh; background-color: #f9f9f9; font-family: "Times New Roman", Times, serif; color: black; padding: 20px; box-sizing: border-box; }
+        .header { border-bottom: 4px solid black; padding-bottom: 16px; margin-bottom: 32px; max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
+        .header h1 { font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+        .header h2 { font-size: 18px; margin-top: 8px; font-style: italic; font-weight: normal; }
+        .status-badge { font-family: monospace; font-size: 14px; border: 1px dashed #666; padding: 4px 16px; background: white; display: inline-block; margin-top: 16px; }
+        .main-content { max-width: 900px; margin: 0 auto; border: 2px solid black; padding: 24px; background: white; box-shadow: 6px 6px 0px black; }
+        .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid black; padding-bottom: 16px; }
+        .nav span { font-weight: bold; margin-right: 8px; }
+        .nav button { padding: 6px 12px; border: 1px solid black; font-family: Arial, sans-serif; font-size: 14px; cursor: pointer; background: #e0e0e0; color: black; transition: background 0.2s; }
+        .nav button.active { background: black; color: white; font-weight: bold; }
+        .nav button:hover:not(.active) { background: #d0d0d0; }
+        .content-area { font-family: Arial, sans-serif; }
+        .fieldset { border: 1px solid black; padding: 16px; margin-bottom: 24px; background: #fafafa; }
+        .legend { font-weight: bold; padding: 0 4px; font-size: 14px; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: flex-start; font-size: 14px; flex-direction: column; }
+        @media (min-width: 600px) { .form-group { flex-direction: row; align-items: center; } }
+        .form-group label { font-weight: bold; width: 160px; flex-shrink: 0; margin-bottom: 4px; }
+        .form-input { border: 1px solid black; padding: 6px; width: 100%; max-width: 400px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+        textarea.form-input { resize: vertical; min-height: 60px; }
+        .form-actions { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #999; }
+        .btn-submit { background: #e0e0e0; border: 1px solid black; padding: 6px 16px; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .btn-submit:hover { background: #d0d0d0; }
+        .btn-cancel { background: white; border: 1px solid black; padding: 6px 16px; cursor: pointer; margin-left: 8px; font-family: inherit; }
+        .btn-cancel:hover { background: #f0f0f0; }
+        .table-title { font-weight: bold; margin-bottom: 8px; border-bottom: 2px solid black; display: inline-block; font-size: 16px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 14px; margin-top: 8px; box-shadow: 2px 2px 0px black; }
+        .table th { background: #e0e0e0; border: 1px solid black; padding: 8px; text-align: left; }
+        .table td { border: 1px solid black; padding: 8px; }
+        .table tr:nth-child(even) { background-color: #fafafa; }
+        .table tr:hover { background-color: #f0f0f0; }
+        .text-center { text-align: center; }
+        .font-mono { font-family: monospace; }
+        .action-btn { background: none; border: none; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 14px; padding: 0; text-decoration: underline; }
+        .action-btn.edit { color: #0000cc; margin-right: 12px; }
+        .action-btn.delete { color: #cc0000; }
+        .footer { text-align: center; font-size: 14px; margin-top: 48px; font-family: Arial, sans-serif; border-top: 1px solid black; max-width: 900px; margin-left: auto; margin-right: auto; padding-top: 16px; color: #333; }
+        .flex-row { display: flex; gap: 16px; flex-wrap: wrap; }
+      `}} />
+
       {/* Cabeçalho */}
-      <header className="border-b-4 border-black pb-4 mb-8 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold uppercase text-center tracking-wide">Sistema de Gestão de Estoque</h1>
-        <h2 className="text-lg text-center mt-2 italic">Trabalho Prático - Projeto Integrador (Etapa 3)</h2>
-        <div className="text-center mt-4">
-          <span className="font-mono text-sm border border-dashed border-gray-500 inline-block px-4 py-1 bg-white">
-            Status da Conexão: Simulando Backend em Memória (Mock)
-          </span>
+      <header className="header">
+        <h1>Sistema de Gestão de Estoque</h1>
+        <h2>Trabalho Prático - Projeto Integrador (Etapa 3)</h2>
+        <div className="status-badge">
+          Status da Conexão: Simulando Backend em Memória (Mock)
         </div>
       </header>
 
       {/* Caixa Principal */}
-      <main className="max-w-5xl mx-auto border-2 border-black p-6 bg-white shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+      <main className="main-content">
         
         {/* Navegação */}
-        <div className="flex flex-wrap items-center gap-2 mb-6 border-b-2 border-black pb-4">
-          <span className="font-bold mr-2">Navegação do Sistema:</span>
+        <div className="nav">
+          <span>Navegação do Sistema:</span>
           <button 
             onClick={() => setActiveTab('products')} 
-            className={`px-3 py-1 border border-black font-sans text-sm ${activeTab === 'products' ? 'bg-black text-white font-bold' : 'bg-[#e0e0e0] hover:bg-[#d0d0d0]'}`}
+            className={activeTab === 'products' ? 'active' : ''}
           >
             [1] Produtos
           </button>
           <button 
             onClick={() => setActiveTab('suppliers')} 
-            className={`px-3 py-1 border border-black font-sans text-sm ${activeTab === 'suppliers' ? 'bg-black text-white font-bold' : 'bg-[#e0e0e0] hover:bg-[#d0d0d0]'}`}
+            className={activeTab === 'suppliers' ? 'active' : ''}
           >
             [2] Fornecedores
           </button>
           <button 
             onClick={() => setActiveTab('associations')} 
-            className={`px-3 py-1 border border-black font-sans text-sm ${activeTab === 'associations' ? 'bg-black text-white font-bold' : 'bg-[#e0e0e0] hover:bg-[#d0d0d0]'}`}
+            className={activeTab === 'associations' ? 'active' : ''}
           >
             [3] Associações N:N
           </button>
         </div>
 
         {/* Conteúdo Dinâmico */}
-        <div className="font-sans">
+        <div className="content-area">
           
           {/* ABA 1: PRODUTOS */}
           {activeTab === 'products' && (
-            <div className="mt-4">
-              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-                <legend className="font-bold px-1 text-sm">{isProdEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - PRODUTO'}</legend>
-                <form onSubmit={handleSaveProduct} className="flex flex-col gap-3 text-sm">
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Nome do Produto:</label>
-                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={prodFormData.name} onChange={e => setProdFormData({ ...prodFormData, name: e.target.value })} />
+            <div>
+              <fieldset className="fieldset">
+                <legend className="legend">{isProdEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - PRODUTO'}</legend>
+                <form onSubmit={handleSaveProduct}>
+                  <div className="form-group">
+                    <label>Nome do Produto:</label>
+                    <input required type="text" className="form-input" value={prodFormData.name} onChange={e => setProdFormData({ ...prodFormData, name: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Código de Barras:</label>
-                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
+                  <div className="form-group">
+                    <label>Código de Barras:</label>
+                    <input required type="text" className="form-input" value={prodFormData.barcode} onChange={e => setProdFormData({ ...prodFormData, barcode: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Preço (€):</label>
-                    <input required type="number" step="0.01" className="border border-black p-1 w-32" value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
+                  <div className="form-group">
+                    <label>Preço (€):</label>
+                    <input required type="number" step="0.01" className="form-input" style={{maxWidth: '120px'}} value={prodFormData.price} onChange={e => setProdFormData({ ...prodFormData, price: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36 align-top">Descrição detalhada:</label>
-                    <textarea required className="border border-black p-1 w-full max-w-sm" rows="3" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
+                  <div className="form-group">
+                    <label style={{alignSelf: 'flex-start'}}>Descrição detalhada:</label>
+                    <textarea required className="form-input" rows="3" value={prodFormData.description} onChange={e => setProdFormData({ ...prodFormData, description: e.target.value })} />
                   </div>
-                  <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
-                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
+                  <div className="form-actions">
+                    <button type="submit" className="btn-submit">
                       {isProdEditing ? 'Guardar Alterações' : 'Adicionar ao Banco de Dados'}
                     </button>
                     {isProdEditing && (
-                      <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>
+                      <button type="button" onClick={() => { setIsProdEditing(false); setProdFormData({ id: null, name: '', description: '', price: '', barcode: '' }); }} className="btn-cancel">Cancelar</button>
                     )}
                   </div>
                 </form>
               </fieldset>
 
-              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Produtos Registados</h3>
-              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-                <thead className="bg-[#e0e0e0]">
+              <div className="table-title">Tabela de Produtos Registados</div>
+              <table className="table">
+                <thead>
                   <tr>
-                    <th className="border border-black p-2 text-left">ID</th>
-                    <th className="border border-black p-2 text-left">Nome</th>
-                    <th className="border border-black p-2 text-left">Cód. Barras</th>
-                    <th className="border border-black p-2 text-left">Preço</th>
-                    <th className="border border-black p-2 text-center">Ações</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Cód. Barras</th>
+                    <th>Preço</th>
+                    <th className="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.length === 0 ? (
-                    <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
+                    <tr><td colSpan="5" className="text-center" style={{fontStyle: 'italic'}}>A tabela está vazia.</td></tr>
                   ) : (
                     products.map(p => (
-                      <tr key={p.id} className="hover:bg-[#f5f5f5]">
-                        <td className="border border-black p-2 text-center">{p.id}</td>
-                        <td className="border border-black p-2 font-semibold">{p.name}</td>
-                        <td className="border border-black p-2 font-mono text-xs">{p.barcode}</td>
-                        <td className="border border-black p-2">€ {Number(p.price).toFixed(2)}</td>
-                        <td className="border border-black p-2 text-center">
-                          <button onClick={() => handleEditProduct(p)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
-                          <button onClick={() => handleDeleteProduct(p.id)} className="text-red-800 hover:text-red-600 font-bold">[Eliminar]</button>
+                      <tr key={p.id}>
+                        <td className="text-center">{p.id}</td>
+                        <td style={{fontWeight: 'bold'}}>{p.name}</td>
+                        <td className="font-mono" style={{fontSize: '12px'}}>{p.barcode}</td>
+                        <td>€ {Number(p.price).toFixed(2)}</td>
+                        <td className="text-center">
+                          <button onClick={() => handleEditProduct(p)} className="action-btn edit">[Editar]</button>
+                          <button onClick={() => handleDeleteProduct(p.id)} className="action-btn delete">[Eliminar]</button>
                         </td>
                       </tr>
                     ))
@@ -212,61 +251,61 @@ export default function App() {
 
           {/* ABA 2: FORNECEDORES */}
           {activeTab === 'suppliers' && (
-            <div className="mt-4">
-              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-                <legend className="font-bold px-1 text-sm">{isSuppEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - FORNECEDOR'}</legend>
-                <form onSubmit={handleSaveSupplier} className="flex flex-col gap-3 text-sm">
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Razão Social:</label>
-                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
+            <div>
+              <fieldset className="fieldset">
+                <legend className="legend">{isSuppEditing ? 'MODO DE EDIÇÃO' : 'FORMULÁRIO DE CADASTRO - FORNECEDOR'}</legend>
+                <form onSubmit={handleSaveSupplier}>
+                  <div className="form-group">
+                    <label>Razão Social:</label>
+                    <input required type="text" className="form-input" value={suppFormData.name} onChange={e => setSuppFormData({ ...suppFormData, name: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">CNPJ / NIF:</label>
-                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
+                  <div className="form-group">
+                    <label>CNPJ / NIF:</label>
+                    <input required type="text" className="form-input" value={suppFormData.cnpj} onChange={e => setSuppFormData({ ...suppFormData, cnpj: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Contacto (E-mail):</label>
-                    <input required type="email" className="border border-black p-1 w-full max-w-sm" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
+                  <div className="form-group">
+                    <label>Contacto (E-mail):</label>
+                    <input required type="email" className="form-input" value={suppFormData.contact} onChange={e => setSuppFormData({ ...suppFormData, contact: e.target.value })} />
                   </div>
-                  <div>
-                    <label className="font-semibold mr-2 inline-block w-36">Endereço:</label>
-                    <input required type="text" className="border border-black p-1 w-full max-w-sm" value={suppFormData.address} onChange={e => setSuppFormData({ ...suppFormData, address: e.target.value })} />
+                  <div className="form-group">
+                    <label>Endereço:</label>
+                    <input required type="text" className="form-input" value={suppFormData.address} onChange={e => setSuppFormData({ ...suppFormData, address: e.target.value })} />
                   </div>
-                  <div className="mt-2 pt-2 border-t border-dashed border-gray-400 max-w-lg">
-                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 mr-2 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
+                  <div className="form-actions">
+                    <button type="submit" className="btn-submit">
                       {isSuppEditing ? 'Guardar Alterações' : 'Adicionar Fornecedor'}
                     </button>
                     {isSuppEditing && (
-                      <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="bg-white border border-black px-4 py-1 hover:bg-gray-100 active:translate-y-[1px]">Cancelar</button>
+                      <button type="button" onClick={() => { setIsSuppEditing(false); setSuppFormData({ id: null, name: '', cnpj: '', address: '', contact: '' }); }} className="btn-cancel">Cancelar</button>
                     )}
                   </div>
                 </form>
               </fieldset>
 
-              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Tabela de Fornecedores Registados</h3>
-              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-                <thead className="bg-[#e0e0e0]">
+              <div className="table-title">Tabela de Fornecedores Registados</div>
+              <table className="table">
+                <thead>
                   <tr>
-                    <th className="border border-black p-2 text-left">ID</th>
-                    <th className="border border-black p-2 text-left">Razão Social</th>
-                    <th className="border border-black p-2 text-left">CNPJ/NIF</th>
-                    <th className="border border-black p-2 text-left">Contacto</th>
-                    <th className="border border-black p-2 text-center">Ações</th>
+                    <th>ID</th>
+                    <th>Razão Social</th>
+                    <th>CNPJ/NIF</th>
+                    <th>Contacto</th>
+                    <th className="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {suppliers.length === 0 ? (
-                    <tr><td colSpan="5" className="border border-black p-2 text-center italic">A tabela está vazia.</td></tr>
+                    <tr><td colSpan="5" className="text-center" style={{fontStyle: 'italic'}}>A tabela está vazia.</td></tr>
                   ) : (
                     suppliers.map(s => (
-                      <tr key={s.id} className="hover:bg-[#f5f5f5]">
-                        <td className="border border-black p-2 text-center">{s.id}</td>
-                        <td className="border border-black p-2 font-semibold">{s.name}</td>
-                        <td className="border border-black p-2 font-mono text-xs">{s.cnpj}</td>
-                        <td className="border border-black p-2">{s.contact}</td>
-                        <td className="border border-black p-2 text-center">
-                          <button onClick={() => handleEditSupplier(s)} className="text-blue-800 hover:text-blue-600 mr-3 font-bold">[Editar]</button>
-                          <button onClick={() => handleDeleteSupplier(s.id)} className="text-red-800 hover:text-red-600 font-bold">[Eliminar]</button>
+                      <tr key={s.id}>
+                        <td className="text-center">{s.id}</td>
+                        <td style={{fontWeight: 'bold'}}>{s.name}</td>
+                        <td className="font-mono" style={{fontSize: '12px'}}>{s.cnpj}</td>
+                        <td>{s.contact}</td>
+                        <td className="text-center">
+                          <button onClick={() => handleEditSupplier(s)} className="action-btn edit">[Editar]</button>
+                          <button onClick={() => handleDeleteSupplier(s.id)} className="action-btn delete">[Eliminar]</button>
                         </td>
                       </tr>
                     ))
@@ -278,45 +317,47 @@ export default function App() {
 
           {/* ABA 3: ASSOCIAÇÕES */}
           {activeTab === 'associations' && (
-            <div className="mt-4">
-              <fieldset className="border border-black p-4 mb-6 bg-[#fafafa]">
-                <legend className="font-bold px-1 text-sm">LIGAR PRODUTO A FORNECEDOR (N:N)</legend>
-                <form onSubmit={handleLink} className="flex flex-col md:flex-row gap-4 items-end text-sm">
-                  <div className="flex flex-col">
-                    <label className="font-semibold mb-1">Selecione o Produto (ID - Nome):</label>
-                    <select required className="border border-black p-1 w-64 bg-white" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
-                      <option value="">-- Selecione na lista --</option>
-                      {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
-                    </select>
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="font-semibold mb-1">Selecione o Fornecedor:</label>
-                    <select required className="border border-black p-1 w-64 bg-white" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
-                      <option value="">-- Selecione na lista --</option>
-                      {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <button type="submit" className="bg-[#e0e0e0] border border-black px-4 py-1 hover:bg-[#d0d0d0] active:translate-y-[1px] font-bold">
-                      Gerar Vínculo
-                    </button>
+            <div>
+              <fieldset className="fieldset">
+                <legend className="legend">LIGAR PRODUTO A FORNECEDOR (N:N)</legend>
+                <form onSubmit={handleLink}>
+                  <div className="flex-row">
+                    <div className="form-group col" style={{marginBottom: 0}}>
+                      <label>Selecione o Produto (ID - Nome):</label>
+                      <select required className="form-input" value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}>
+                        <option value="">-- Selecione na lista --</option>
+                        {products.map(p => <option key={p.id} value={p.id}>[{p.id}] {p.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group col" style={{marginBottom: 0}}>
+                      <label>Selecione o Fornecedor:</label>
+                      <select required className="form-input" value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}>
+                        <option value="">-- Selecione na lista --</option>
+                        {suppliers.map(s => <option key={s.id} value={s.id}>[{s.id}] {s.name}</option>)}
+                      </select>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'flex-end'}}>
+                      <button type="submit" className="btn-submit">
+                        Gerar Vínculo
+                      </button>
+                    </div>
                   </div>
                 </form>
               </fieldset>
 
-              <h3 className="font-bold mb-2 border-b-2 border-black inline-block">Lista de Vínculos (Produtos & Fornecedores)</h3>
-              <table className="w-full border-collapse border border-black text-sm mt-2 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-                <thead className="bg-[#e0e0e0]">
+              <div className="table-title">Lista de Vínculos (Produtos & Fornecedores)</div>
+              <table className="table">
+                <thead>
                   <tr>
-                    <th className="border border-black p-2 text-center">Ref. Associação</th>
-                    <th className="border border-black p-2 text-left">Produto Relacionado</th>
-                    <th className="border border-black p-2 text-left">Fornecedor Relacionado</th>
-                    <th className="border border-black p-2 text-center">Opções</th>
+                    <th className="text-center">Ref. Associação</th>
+                    <th>Produto Relacionado</th>
+                    <th>Fornecedor Relacionado</th>
+                    <th className="text-center">Opções</th>
                   </tr>
                 </thead>
                 <tbody>
                   {associations.length === 0 ? (
-                    <tr><td colSpan="4" className="border border-black p-2 text-center italic">Nenhum vínculo registado.</td></tr>
+                    <tr><td colSpan="4" className="text-center" style={{fontStyle: 'italic'}}>Nenhum vínculo registado.</td></tr>
                   ) : (
                     associations
                       .map(assoc => {
@@ -326,12 +367,12 @@ export default function App() {
                       })
                       .filter(Boolean)
                       .map(({ assoc, p, s }) => (
-                        <tr key={assoc.id} className="hover:bg-[#f5f5f5]">
-                          <td className="border border-black p-2 text-center font-mono">{assoc.id}</td>
-                          <td className="border border-black p-2">[{p.id}] {p.name}</td>
-                          <td className="border border-black p-2">[{s.id}] {s.name}</td>
-                          <td className="border border-black p-2 text-center">
-                            <button onClick={() => handleUnlink(assoc.id)} className="text-red-800 hover:text-red-600 font-bold">[Desfazer Vínculo]</button>
+                        <tr key={assoc.id}>
+                          <td className="text-center font-mono">{assoc.id}</td>
+                          <td>[{p.id}] {p.name}</td>
+                          <td>[{s.id}] {s.name}</td>
+                          <td className="text-center">
+                            <button onClick={() => handleUnlink(assoc.id)} className="action-btn delete">[Desfazer Vínculo]</button>
                           </td>
                         </tr>
                       ))
@@ -344,7 +385,7 @@ export default function App() {
       </main>
 
       {/* Rodapé */}
-      <footer className="text-center text-sm mt-12 text-gray-800 font-sans border-t border-black max-w-5xl mx-auto pt-4">
+      <footer className="footer">
         <p>Desenvolvido como requisito parcial para a disciplina de <strong>Projeto Integrador</strong>.</p>
         <p>Faculdade Gran</p>
       </footer>
